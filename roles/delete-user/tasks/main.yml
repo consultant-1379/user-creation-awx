@@ -1,0 +1,9 @@
+---
+ - include_vars: users.yaml
+
+ - name: Delete users
+   user:
+     name: "{{ item.username }}"
+     state: absent
+     remove: yes
+   with_items: '{{users}}'

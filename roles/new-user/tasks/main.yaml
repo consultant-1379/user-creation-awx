@@ -1,0 +1,29 @@
+---
+
+ - include_vars: users.yaml
+
+ - name: Create a new user
+   tags: user_creation
+   user:
+     name: "{{ item.username }}"
+     shell: /bin/bash
+     update_password: always
+     password: "{{ item.newpassword|password_hash('sha512') }}"
+   with_items: '{{users}}'
+   no_log: true
+
+ - name: check all groups on server
+   shell: cat /etc/group | cut -d ':' -f1
+   register: grp_list
+
+ - name: Add the new user to a second group if it's existed on server
+   shell: usermod -aG '{{ item.second_group }}' '{{ item.username }}'
+   when: (item.second_group in grp_list.stdout_lines) != -1
+   with_items: '{{users}}'
+   no_log: true
+
+ - name: Add user to sudoers
+   shell: echo '{{ item.username }}    ALL=(ALL)  PASSWD:ALL' >> /etc/sudoers.d/csa_sudoers
+   when: item.sudoer
+   with_items: '{{users}}'
+   no_log: true

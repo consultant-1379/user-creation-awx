@@ -1,0 +1,16 @@
+---
+users:
+
+  - username: user1
+    newpassword: pass1
+    # Mentioned group will be added to user as a secondry group
+    second_group: wheel
+    # User will be added to csa_sudoers
+    sudoer: true
+
+  - username: user2
+    newpassword: 'pass2'
+    # leave blank if you don't wish to add user to a secondry group
+    second_group:
+    # User will not be added to csa_sudoers
+    sudoer: false
